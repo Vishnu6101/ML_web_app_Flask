@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %} Logistic Regression {% endblock %}
+
+{% block heading %} <h1>Logistic Regression Evaluation Metrics</h1> {% endblock %}
+
+{% block output %} 
+    <p>The Logistic Regression Evaluation Metrics are: </p>
+    
+    <ul>
+        <li>Accuracy</li>
+        <li>Precision</li>
+        <li>Recall</li>
+        <li>F1-Score</li>
+    </ul>
+
+    <hr>
+
+    <h3>Logistic Regression</h3>
+    <p>
+        Coefficients : 
+        {% for i in coeff %}
+            {% for j in i%}
+                {{ j }}
+            {% endfor%}
+        {% endfor %}
+    </p>
+    <p>
+        Intercept : 
+        {% for i in inter %}
+            {{ i }}
+        {% endfor %}
+    </p>
+    <p>
+        Accuracy : <span id="accuracy">{{ accuracy }}</span>
+    </p>
+    <p>
+        Precision : <span id="precision">{{ precision }}</span>
+    </p>
+    <p>
+        Recall : <span id="recall">{{ recall }}</span>
+    </p>
+    <p>
+        F_Score : <span id="fscore">{{ F_Score }}</span>
+    </p>
+    <p>
+        True Positive : <span id="TPsliderval">{{ tp }}</span>
+        <input type="range" min="0" max={{tp+fp}} value={{tp}} style="width: 20%;" id="TPslider">
+    </p>
+    <p>
+        False Positive : <span id="FPsliderval">{{ fp }}</span>
+        <input type="range" min="0" max={{tp+fp}} value={{fp}} style="width: 20%;" id="FPslider">
+    </p>
+    <p>
+        False Negative : <span id="FNsliderval">{{ fn }}</span>
+        <input type="range" min="0" max={{fn+tn}} value={{fn}} style="width: 20%;" id="FNslider">
+    </p>
+    <p>
+        True Negative : <span id="TNsliderval">{{ tn }}</span>
+        <input type="range" min="0" max={{fn+tn}} value={{tn}} style="width: 20%;" id="TNslider">
+    </p>
+    <!-- <script src="{{url_for('static', filename='../static/JS/script.js')}}"></script> -->
+    <script>
+        var slider1 = document.getElementById('TPslider');
+        var slider1Val = document.getElementById('TPsliderval');
+        var slider2 = document.getElementById('FPslider');
+        var slider2Val = document.getElementById('FPsliderval');
+        var curr = slider1.value;
+        var curr2 = slider2.value;
+        
+        slider1.oninput = function() {
+            // console.log(this.value)
+            slider1Val.innerHTML = this.value;
+            var diff = curr - this.value;
+            slide(diff * -1);
+            curr = slider1.value;
+            evaluationMetrics();
+        }
+
+        function slide(val){
+            slider2.value = slider2.value - val;
+            slider2Val.innerHTML = slider2.value;
+            curr2 = slider2.value;
+        }
+        
+        slider2.oninput = function() {
+            // console.log(this.value)
+            slider2Val.innerHTML = this.value;
+            var diff2 = curr2 - this.value;
+            slide2(diff2 * -1);
+            curr2 = slider2.value;
+            evaluationMetrics();
+        }
+
+        function slide2(val){
+            slider1.value = slider1.value - val;
+            slider1Val.innerHTML = slider1.value;
+            curr = slider1.value;
+        }
+        
+        var slider3 = document.getElementById('FNslider');
+        var slider3Val = document.getElementById('FNsliderval');
+        var slider4 = document.getElementById('TNslider');
+        var slider4Val = document.getElementById('TNsliderval');
+        var curr3 = slider3.value;
+        var curr4 = slider4.value;
+        
+        slider3.oninput = function() {
+            // console.log(this.value)
+            slider3Val.innerHTML = this.value;
+            var diff3 = curr3 - this.value;
+            slide3(diff3 * -1);
+            curr3 = slider3.value;
+            evaluationMetrics();
+        }
+
+        function slide3(val){
+            slider4.value = slider4.value - val;
+            slider4Val.innerHTML = slider4.value;
+            curr4 = slider4.value;
+        }
+        
+        slider4.oninput = function() {
+            // console.log(this.value)
+            slider4Val.innerHTML = this.value;
+            var diff4 = curr4 - this.value;
+            slide4(diff4 * -1);
+            curr4 = slider4.value;
+            evaluationMetrics();
+        }
+
+        function slide4(val){
+            slider3.value = slider3.value - val;
+            slider3Val.innerHTML = slider3.value;
+            curr3 = slider3.value;
+        }
+
+        function evaluationMetrics(){
+            var truePos = slider1.value;
+            var falsePos = slider2.value;
+            var falseNeg = slider3.value;
+            var trueNeg = slider4.value;
+
+            var Accuracy = (eval(truePos) + eval(trueNeg)) / (eval(truePos) + eval(falsePos) + eval(falseNeg) + eval(trueNeg));
+            var AccVal = document.getElementById('accuracy');
+            AccVal.innerHTML = Accuracy;
+
+            var Precision = eval(truePos) / (eval(truePos) + eval(falsePos));
+            var PreVal = document.getElementById('precision');
+            PreVal.innerHTML = Precision;
+
+            var Recall = eval(truePos) / (eval(truePos) + eval(falseNeg));
+            var RecVal = document.getElementById('recall');
+            RecVal.innerHTML = Recall;
+
+            var FScore = (2 * Precision * Recall) / (Precision + Recall);
+            var FVal = document.getElementById('fscore');
+            FVal.innerHTML = FScore;
+        }
+    </script>
+{% endblock %}
+
+{% block button %}
+    <form action="/logistic" method="POST">
+        <div>
+            <label for="C">C Inverse Regularization parameter : </label>
+            <input type="range" min="0.01" max="10" step="0.01" value="1" id="slider" name="C"
+                    style="width: 20%;">
+        <span id="sliderValue"></span>
+        </div>
+        <p>
+            <button type="submit" value="submit">Submit</button>
+        </p>
+    </form>
+    <script>
+        var rangeslider = document.getElementById("slider");
+        var output = document.getElementById("sliderValue");
+        output.innerHTML = rangeslider.value;
+        
+        rangeslider.oninput = function() {
+        output.innerHTML = this.value;
+        }
+    </script>
+{% endblock %}

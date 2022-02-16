@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %} Linear Regression {% endblock %}
+
+{% block heading %} <h1>Linear Regression Evaluation Metrics</h1> {% endblock %}
+
+{% block description %} 
+    <p>The Linear Regression Evaluation Metrics are: </p>
+    
+    <ul>
+        <li>Root Mean Square Error</li>
+        <li>Mean Square Error</li>
+        <li>Absolute Mean Square Error</li>
+        <li>R-Squared Value</li>
+        <li>Adjusted R-Squred Value</li>
+    </ul>
+
+    <hr>
+
+{% endblock %}
+
+{% block output%}
+
+    <h3>Linear Regression</h3>
+    <p>
+        Coefficients : 
+        {% for i in coeff %}
+            {{ i }}
+        {% endfor %}
+    </p>
+    <p>
+        Intercept : {{ inter }}
+    </p>
+    <p>
+        Root Mean Square Error : {{ rmse }}
+    </p>
+    <p>
+        Mean Squared Error : {{ mse }}
+    </p>
+    <p>
+        Mean Absolute Error : {{ mae }}
+    </p>
+    <p>
+        R-Squared Value : {{ R2 }}
+    </p>
+
+{% endblock %}
+
+{% block button %} 
+    <form action="/linear" method="POST">
+        <div>
+            <label for="lambda">Lambda Regularization parameter : </label>
+            <input type="range" min="0" max="10" step="0.001" value="0" id="slider" name="lambda"
+                    style="width: 20%;">
+        <span id="sliderValue"></span>
+        </div>
+            
+        <script>
+            var rangeslider = document.getElementById("slider");
+            var output = document.getElementById("sliderValue");
+            output.innerHTML = rangeslider.value;
+            
+            rangeslider.oninput = function() {
+            output.innerHTML = this.value;
+            }
+        </script>
+        <p>
+            <button type="submit" value="submit">Submit</button>
+        </p>
+    </form>
+{% endblock %}

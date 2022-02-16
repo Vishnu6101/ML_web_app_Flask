@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %} Home Page {% endblock %}
+
+{% block heading %} <h1>ML Flask Web Application</h1> {% endblock %}
+
+{% block output %}
+    <form method="POST">
+        <p>
+            <a href="{{url_for('linearRegression')}}">Continue with Linear Regression</a>
+        </p>
+        <p>
+            <a href="{{url_for('logisticRegression')}}">Continue with Logistic Regression</a>
+        </p>
+    </form>
+{% endblock %}
